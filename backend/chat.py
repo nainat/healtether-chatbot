@@ -26,9 +26,7 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     query: str
 
-# -----------------------------
-# LOAD PERSISTENT VECTOR DB
-# -----------------------------
+
 if not os.path.exists(INDEX_PATH):
     raise RuntimeError("❌ FAISS index not found. Run ingest.py first.")
 
@@ -37,9 +35,7 @@ chunks = np.load(CHUNKS_PATH, allow_pickle=True)
 
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-# -----------------------------
-# CHAT ENDPOINT
-# -----------------------------
+
 @app.post("/chat")
 def chat(request: ChatRequest):
     query_embedding = embedder.encode([request.query], convert_to_numpy=True)

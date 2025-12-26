@@ -39,11 +39,9 @@ with sync_playwright() as p:
 with open(DATA_PATH, "w", encoding="utf-8") as f:
     f.write(all_text)
 
-print("✅ Website text saved")
+print(" Website text saved")
 
-# -----------------------------
-# CHUNK + EMBED
-# -----------------------------
+
 def chunk_text(text, chunk_size=400):
     words = text.split()
     return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
@@ -53,13 +51,11 @@ chunks = chunk_text(all_text)
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 embeddings = embedder.encode(chunks, convert_to_numpy=True)
 
-# -----------------------------
-# SAVE FAISS INDEX (PERSISTENT)
-# -----------------------------
+
 index = faiss.IndexFlatL2(embeddings.shape[1])
 index.add(embeddings.astype("float32"))
 
 faiss.write_index(index, INDEX_PATH)
 np.save(CHUNKS_PATH, chunks)
 
-print("✅ Persistent vector DB created")
+print("Persistent vector DB created")
